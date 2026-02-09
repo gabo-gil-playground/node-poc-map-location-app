@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import * as Location from 'expo-location';
 
 /**
@@ -70,31 +69,11 @@ export async function getCurrentLocation(): Promise<SimpleLocation> {
  * area of exported APIs and centralize permission logic.
  */
 async function ensureForegroundPermission(): Promise<boolean> {
-  // On web, expo-location permission semantics differ slightly but the same API is used.
-  // We rely on Expo's cross-platform abstraction here.
-  const existingPermission = await Location.getForegroundPermissionsAsync();
-
-  if (existingPermission.status === Location.PermissionStatus.GRANTED) {
-    return true;
-  }
   /**
-   * If the user has previously denied but the platform still allows
-   * us to ask again (canAskAgain === true), we should respectfully
-   * re-prompt. This is particularly important on Android where the
-   * initial state may be "denied" but the system dialog can still
-   * be shown.
+   * Always delegate to Expo's requestForegroundPermissionsAsync.
+   * The underlying implementation will decide whether to show
+   * a system dialog or immediately return the current status.
    */
-  if (existingPermission.status !== Location.PermissionStatus.GRANTED && !existingPermission.canAskAgain) {
-    return false;
-  }
-
-  const isGranted = await requestForegroundLocationPermission();
-
-  // Small safeguard for platforms where behavior might differ.
-  if (Platform.OS === 'web') {
-    return isGranted;
-  }
-
-  return isGranted;
+  return requestForegroundLocationPermission();
 }
 

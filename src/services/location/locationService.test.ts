@@ -11,7 +11,7 @@ describe('locationService', () => {
   });
 
   it('throws when permission is denied', async () => {
-    mockedLocation.getForegroundPermissionsAsync.mockResolvedValue({
+    mockedLocation.requestForegroundPermissionsAsync.mockResolvedValue({
       status: ExpoLocation.PermissionStatus.DENIED,
       granted: false,
       canAskAgain: false,
@@ -24,7 +24,7 @@ describe('locationService', () => {
   });
 
   it('returns current location when permission is granted', async () => {
-    mockedLocation.getForegroundPermissionsAsync.mockResolvedValue({
+    mockedLocation.requestForegroundPermissionsAsync.mockResolvedValue({
       status: ExpoLocation.PermissionStatus.GRANTED,
       granted: true,
       canAskAgain: true,
